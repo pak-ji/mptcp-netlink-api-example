@@ -13,27 +13,31 @@
 <br>
 
 ## Environments
-* **Server**
-	* HW
-		* Desktop PC (x86)
-		* One Ethernet NIC
-	* OS
-		* Ubuntu 18.04.x
-		* Kernel 4.19.x
-		* Mptcp 0.95 (mptcp of multipath-tcp.org)
-	* Package
-		* libnl3
-* **Client**
-	* HW
-		* Raspberry Pi 3 B+ (Arm)
-		* Two Ethernet NIC
-	* OS
-		* Raspberry Pi OS 2020-05-xx
-		* Kernel 4.19.x
-		* Mptcp 0.95 (mptcp of multipath-tcp.org)
-	* Package
-		* libnl3
-		* ifstat (for testing)
+#### Server
+<pre>
+HW
+	- Desktop PC (x86)
+	- One Ethernet NIC
+OS
+	- Ubuntu 18.04.x
+	- Kernel 4.19.x
+	- Mptcp 0.95 (mptcp of multipath-tcp.org)
+Package
+	- libnl3
+</pre>
+#### Client
+<pre>
+HW
+	- Raspberry Pi 3 B+ (Arm)
+	- Two Ethernet NIC
+OS
+	- Raspberry Pi OS 2020-05-xx
+	- Kernel 4.19.x
+	- Mptcp 0.95 (mptcp of multipath-tcp.org)
+Package
+	- libnl3
+	- ifstat (for testing)
+</pre>
 
 <br>
 
