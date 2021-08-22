@@ -1,5 +1,5 @@
 ## mptcp-netlink-api-example
-* 간략한 설명 (to Eng)
+* Preparing...
 
 <br>
 
@@ -7,8 +7,8 @@
 * src  
 ㄴ client : client source  
 ㄴ server : server source  
-ㄴ func : common function  
-ㄴ hdr : general header   
+ㄴ func : common function source  
+ㄴ hdr : general header source   
 
 <br>
 
@@ -37,13 +37,20 @@
 
 <br>
 
-## Installation Package
+## Caution
+* Must be an MPTCP for multipath-tcp.org.
+* The mptcp version must be 0.95 or higher
+* The client must have two NICs.
+* Servers and clients must not use loopback addresses.
+
+<br>
+
+## Installation Package (Must)
 <pre>
 libnl3
 
 $ sudo apt-get install libnl-3-dev libnl-genl-3-dev
 </pre>
-
 <pre>
 ifstat
 
@@ -52,7 +59,24 @@ $ sudo apt-get install ifstat
 
 <br>
 
-## Caution
-* Servers and clients must not use loopback addresses.
-* The mptcp version must be 0.95
-* The client must have two NICs.
+## How to installations?
+<pre>
+$ make
+</pre>
+
+<br>
+
+## How to run?
+##### in server
+<pre>
+$ ./mptcp_nl_server
+</pre>
+##### in client
+<pre>
+$ ./mptcp_nl_client
+</pre>
+
+<br>
+
+## Video
+* Preparing...
