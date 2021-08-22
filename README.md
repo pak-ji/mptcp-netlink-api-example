@@ -23,8 +23,6 @@
 		* Mptcp 0.95 (mptcp of multipath-tcp.org)
 	* Package
 		* libnl3
-<br>
-
 * **Client**
 	* HW
 		* Raspberry Pi 3 B+ (Arm)
