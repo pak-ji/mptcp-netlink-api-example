@@ -10,11 +10,20 @@ mptcp_nl_client: ./client/mptcp_nl_client.o ./func/cmd_func.o ./func/event_func.
 	$(CC) -o $@ $< $(CFLAGS)
 
 ./server/mptcp_nl_server.o: ./server/mptcp_nl_server.c
-	$(CC) -c $@ $< $(CFLAGS)
+	$(CC) -c -o $@ $< $(CFLAGS)
 
 ./client/mptcp_nl_client.o: ./client/mptcp_nl_client.c
-	$(CC) -c $@ $< $(CFLAGS)
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+./func/cmd_func.o: ./func/cmd_func.c
+	$(CC) -c -o $@ $< $(CFLAGS)
+
+./func/event_func.o: ./func/event_func.c
+	$(CC) -c -o $@ $< $(CFLAGS)
 
 clean:
-
-# 테스트해보며 계속해서 작성..
+	rm mptcp_nl_server
+	rm mptcp_nl_client
+	rm ./func/*.o
+	rm ./server/*.o
+	rm ./client/*.o

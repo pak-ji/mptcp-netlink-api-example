@@ -22,15 +22,15 @@ struct mp_nl_err{
 };
 
 struct mp_nl_attr{
-	uint32_t token = 0;
-	uint16_t family = 0;
-	uint32_t saddr4 = 0;
-	uint32_t daddr4 = 0;
-	uint16_t sport = 0;
-	uint16_t dport = 0;
-	uint8_t loc_id = 0;
-	uint8_t rem_id = 0;
-	uint8_t backup = 0;
+	uint32_t token;
+	uint16_t family;
+	uint32_t saddr4;
+	uint32_t daddr4;
+	uint16_t sport;
+	uint16_t dport;
+	uint8_t loc_id;
+	uint8_t rem_id;
+	uint8_t backup;
 };
 
 #endif /*__USER_MPTCP_NL_MSG_H__*/

@@ -35,10 +35,10 @@ struct nl_msg* create_cmd_announce_req(struct mp_nl_attr attr, int family_id)
 	genlmsg_put(req, getpid(), NL_AUTO_SEQ, family_id, 0, 
 						NLM_F_REQUEST, MPTCP_CMD_ANNOUNCE, MPTCP_GENL_VER);
 
-	nla_put(req, MPTCP_ATTR_TOKEN, sizeof(token), token);
-	nla_put(req, MPTCP_ATTR_FAMILY, sizeof(family), family);
-	nla_put(req, MPTCP_ATTR_LOC_ID, sizeof(loc_id), loc_id);
-	nla_put(req, MPTCP_ATTR_SADDR4, sizeof(saddr4), saddr4);
+	nla_put(req, MPTCP_ATTR_TOKEN, sizeof(token), &token);
+	nla_put(req, MPTCP_ATTR_FAMILY, sizeof(family), &family);
+	nla_put(req, MPTCP_ATTR_LOC_ID, sizeof(loc_id), &loc_id);
+	nla_put(req, MPTCP_ATTR_SADDR4, sizeof(saddr4), &saddr4);
 
 	return req;
 }
@@ -70,13 +70,13 @@ struct nl_msg* create_cmd_sub_create_req(struct mp_nl_attr attr, int family_id)
 	genlmsg_put(req, getpid(), NL_AUTO_SEQ, family_id, 0,
 						NLM_F_REQUEST, MPTCP_CMD_SUB_CREATE, MPTCP_GENL_VER);
 
-	nla_put(req, MPTCP_ATTR_TOKEN, sizeof(token), token);
-	nla_put(req, MPTCP_ATTR_FAMILY, sizeof(family), family);
-	nla_put(req, MPTCP_ATTR_LOC_ID, sizeof(loc_id), loc_id);
-	nla_put(req, MPTCP_ATTR_REM_ID, sizeof(rem_id), rem_id);
-	nla_put(req, MPTCP_ATTR_DADDR4, sizeof(daddr4), daddr4);
-	nla_put(req, MPTCP_ATTR_DPORT, sizeof(dport), dport);
-	nla_put(req, MPTCP_ATTR_BACKUP, sizeof(backup), backup);
+	nla_put(req, MPTCP_ATTR_TOKEN, sizeof(token), &token);
+	nla_put(req, MPTCP_ATTR_FAMILY, sizeof(family), &family);
+	nla_put(req, MPTCP_ATTR_LOC_ID, sizeof(loc_id), &loc_id);
+	nla_put(req, MPTCP_ATTR_REM_ID, sizeof(rem_id), &rem_id);
+	nla_put(req, MPTCP_ATTR_DADDR4, sizeof(daddr4), &daddr4);
+	nla_put(req, MPTCP_ATTR_DPORT, sizeof(dport), &dport);
+	nla_put(req, MPTCP_ATTR_BACKUP, sizeof(backup), &backup);
 
 	return req;
 }
@@ -108,13 +108,13 @@ struct nl_msg* create_cmd_sub_priority_req(struct mp_nl_attr attr, int family_id
 	genlmsg_put(req, getpid(), NL_AUTO_SEQ, family_id, 0,
 						NLM_F_REQUEST, MPTCP_CMD_SUB_PRIORITY, MPTCP_GENL_VER);
 
-	nla_put(req, MPTCP_ATTR_TOKEN, sizeof(token), token);
-	nla_put(req, MPTCP_ATTR_FAMILY, sizeof(family), family);
-	nla_put(req, MPTCP_ATTR_SADDR4, sizeof(saddr4), saddr4);
-	nla_put(req, MPTCP_ATTR_SPORT, sizeof(sport), sport);
-	nla_put(req, MPTCP_ATTR_DADDR4, sizeof(daddr4), daddr4);
-	nla_put(req, MPTCP_ATTR_DPORT, sizeof(dport), dport);
-	nla_put(req, MPTCP_ATTR_BACKUP, sizeof(backup), backup);
+	nla_put(req, MPTCP_ATTR_TOKEN, sizeof(token), &token);
+	nla_put(req, MPTCP_ATTR_FAMILY, sizeof(family), &family);
+	nla_put(req, MPTCP_ATTR_SADDR4, sizeof(saddr4), &saddr4);
+	nla_put(req, MPTCP_ATTR_SPORT, sizeof(sport), &sport);
+	nla_put(req, MPTCP_ATTR_DADDR4, sizeof(daddr4), &daddr4);
+	nla_put(req, MPTCP_ATTR_DPORT, sizeof(dport), &dport);
+	nla_put(req, MPTCP_ATTR_BACKUP, sizeof(backup), &backup);
 
 	return req;
 }
