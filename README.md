@@ -65,6 +65,7 @@ $ sudo apt-get install ifstat
 
 ## How to installations?
 <pre>
+$ cd src
 $ make
 </pre>
 
@@ -73,11 +74,11 @@ $ make
 ## How to run?
 ##### in server
 <pre>
-$ ./mptcp_nl_server
+$ ./src/mptcp_nl_server
 </pre>
 ##### in client
 <pre>
-$ ./mptcp_nl_client
+$ ./src/mptcp_nl_client
 </pre>
 
 <br>
