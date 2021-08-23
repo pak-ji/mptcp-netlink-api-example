@@ -38,18 +38,9 @@ OS
 Package
 	- libnl3
 	- ifstat (for testing)
-</pre>
+</pre>  
 
 <br>
-
-## Directory Tree
-* src  
-ㄴ client : client source  
-ㄴ server : server source  
-ㄴ func : common function source  
-ㄴ hdr : general header source   
-
-<br/>
 
 ## Caution
 * Must be an MPTCP for multipath-tcp.org.
