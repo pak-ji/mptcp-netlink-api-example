@@ -1,12 +1,14 @@
 ## mptcp-netlink-api-example
 * This is an example of the MPTCP Netlink API tested in the environment written below.
 * Program Flow
-	1. The server and client make an MPTCP initial connection.
-	2. The server and client exchange the available IP addresses of NICs.
-	3. If the MPTCP connection status is Established, the client creates a new subflow.
-	4. The client sets the newly connected Subflow to Backup.
-	5. When the client enters a "toggle" string, the priority changes between the two subflows.
-	6. Repeat v.(5.) until all data is sent.
+~~~
+1. The server and client make an MPTCP initial connection.
+2. The server and client exchange the available IP addresses of NICs.
+3. If the MPTCP connection status is Established, the client creates a new subflow.
+4. The client sets the newly connected Subflow to Backup.
+5. When the client enters a "toggle" string, the priority changes between the two subflows.
+6. Repeat "5." until all data is sent.
+~~~
 
 <br>
 
