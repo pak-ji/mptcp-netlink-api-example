@@ -13,15 +13,6 @@ Program Flow
 
 <br>
 
-## Directory Tree
-* src  
-ㄴ client : client source  
-ㄴ server : server source  
-ㄴ func : common function source  
-ㄴ hdr : general header source   
-
-<br>
-
 ## Environments
 #### Server
 <pre>
@@ -50,6 +41,15 @@ Package
 </pre>
 
 <br>
+
+## Directory Tree
+* src  
+ㄴ client : client source  
+ㄴ server : server source  
+ㄴ func : common function source  
+ㄴ hdr : general header source   
+
+<br/>
 
 ## Caution
 * Must be an MPTCP for multipath-tcp.org.
