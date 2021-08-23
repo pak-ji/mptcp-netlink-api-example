@@ -55,6 +55,8 @@ Package
 * Must be an MPTCP for multipath-tcp.org.
 * The mptcp version must be 0.95 or higher
 * The client must have two NICs.
+* The client must complete Routing setup.
+	* See this link : https://multipath-tcp.org/pmwiki.php/Users/ConfigureRouting
 * Servers and clients must not use loopback addresses.
 
 <br>
