@@ -4,8 +4,8 @@
 #include "mptcp_nl_api.h"
 #include "mptcp_nl_msg.h"
 
-struct nl_msg* create_cmd_announce_req(struct mp_nl_attr attr);
-struct nl_msg* create_cmd_sub_create_req(struct mp_nl_attr attr);
-struct nl_msg* create_cmd_sub_priority_req(struct mp_nl_attr attr);
+struct nl_msg* create_cmd_announce_req(struct mp_nl_attr attr, int family_id);
+struct nl_msg* create_cmd_sub_create_req(struct mp_nl_attr attr, int family_id);
+struct nl_msg* create_cmd_sub_priority_req(struct mp_nl_attr attr, int family_id);
 
 #endif /* __USER_CMD_FUNC_H__ */
