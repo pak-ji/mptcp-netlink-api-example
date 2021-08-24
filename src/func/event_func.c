@@ -12,8 +12,8 @@
 
 
 
-#include "../hdr/event_func.h"
-#include "../hdr/libnl_api.h"
+#include "../hdr/common/event_func.h"
+#include "../hdr/common/libnl_api.h"
 
 /**
  * @brief	extract event from response message

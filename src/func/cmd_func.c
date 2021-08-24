@@ -10,8 +10,8 @@
 
 
 
-#include "../hdr/event_func.h"
-#include "../hdr/libnl_api.h"
+#include "../hdr/common/event_func.h"
+#include "../hdr/common/libnl_api.h"
 
 /**
  * @brief	Create a request message(CMD_ANNOUNCE) to send to MPTCP Netlink API.

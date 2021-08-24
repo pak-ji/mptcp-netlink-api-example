@@ -6,7 +6,7 @@ all: mptcp_nl_server mptcp_nl_client
 mptcp_nl_server: ./server/mptcp_nl_server.o ./func/cmd_func.o ./func/event_func.o
 	$(CC) -o $@ $^ $(CFLAGS)
 
-mptcp_nl_client: ./client/mptcp_nl_client.o ./func/cmd_func.o ./func/event_func.o
+mptcp_nl_client: ./client/mptcp_nl_client.o ./client/lookup_nic.o ./func/cmd_func.o ./func/event_func.o
 	$(CC) -o $@ $^ $(CFLAGS)
 
 ./server/mptcp_nl_server.o: ./server/mptcp_nl_server.c 
@@ -14,6 +14,9 @@ mptcp_nl_client: ./client/mptcp_nl_client.o ./func/cmd_func.o ./func/event_func.
 
 ./client/mptcp_nl_client.o: ./client/mptcp_nl_client.c
 	$(CC) -c -o $@ $^ $(CFLAGS)
+
+./client/lookup_nic.o: ./client/lookup_nic.c
+	$(CC) -c -o $@ $^
 
 ./func/cmd_func.o: ./func/cmd_func.c
 	$(CC) -c -o $@ $^ $(CFLAGS)
