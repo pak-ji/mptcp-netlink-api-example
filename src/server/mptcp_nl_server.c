@@ -63,7 +63,7 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
-	if(setsockopt(mp_main_server_sock, SOL_TCP, MPTCP_ENABLED, &enable, sizeof(enable) < 0)){
+	if(setsockopt(mp_main_server_sock, SOL_TCP, MPTCP_ENABLED, &enable, sizeof(enable)) < 0){
 		perror("ERROR) setsockopt() ");
 		return -1;
 	}
