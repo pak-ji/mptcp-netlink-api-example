@@ -109,10 +109,11 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
-	do{
-		nsize = recv(mp_main_server_sock, recv_buff, 1024, 0);
+	nsize = -1;
+	while(nsize!=0){
+		nsize = recv(mp_main_client_sock, recv_buff, 1024, 0);
 		fwrite(recv_buff, sizeof(char), nsize, file);
-	}while(nsize!=0);
+	}
 	printf("INFO) Received file\n");
 
 	/* End */

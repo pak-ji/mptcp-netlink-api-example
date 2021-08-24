@@ -218,6 +218,7 @@ int main(int argc, char** argv)
 		nsize += fpsize;
 		send(mp_main_sock, send_buff, fpsize, 0);
 	}
+	printf("INFO) Completed data transfer.\n");
 
 	/* End */
 	fclose(file);
