@@ -16,7 +16,7 @@
 #include "../hdr/libnl_api.h"
 
 /**
- * @brief	extract events from mptcp netlink messages
+ * @brief	extract event from response message
  * 
  * @func	extract_event
  * @param	res_buff		: Received event message buff
@@ -34,7 +34,7 @@ int extract_event(char* res_buff)
 
 
 /**
- * @brief	Extract netlink attributes from MPTCP_EVENT_CREATED 
+ * @brief	Extract netlink attributes from response message(EVENT_CREATED)
  * 
  * @func	event_created
  * @param	res_buff		: Received event message buff
@@ -81,7 +81,7 @@ struct mp_nl_attr event_created(char* res_buff, bool debug)
 
 
 /**
- * @brief	Extract netlink attributes from MPTCP_EVENT_ESTABLISHED
+ * @brief	Extract netlink attributes from response message(EVENT_ESTABLISHED)
  * 
  * @func	event_established
  * @param	res_buff		: Received event message buff
@@ -128,7 +128,7 @@ struct mp_nl_attr event_established(char* res_buff, bool debug)
 
 
 /**
- * @brief	Extract netlink attributes from MPTCP_EVENT_ANNOUNCED
+ * @brief	Extract netlink attributes from response message(EVENT_ANNOUNCED)
  * 
  * @func	event_announced
  * @param	res_buff		: Received event message buff
@@ -172,7 +172,7 @@ struct mp_nl_attr event_announced(char* res_buff, bool debug)
 
 
 /**
- * @brief	Extract netlink attributes from MPTCP_EVENT_SUB_ESTABLISHED
+ * @brief	Extract netlink attributes from response message(EVENT_SUB_ESTABLISHED)
  * 
  * @func	event_sub_established
  * @param	res_buff		: Received event message buff
@@ -222,7 +222,7 @@ struct mp_nl_attr event_sub_established(char* res_buff, bool debug)
 
 
 /**
- * @brief	Extract netlink attributes from MPTCP_EVENT_SUB_CLOSED
+ * @brief	Extract netlink attributes from response message(EVENT_SUB_CLOSED)
  * 
  * @func	event_sub_closed
  * @param	res_buff		: Received event message buff
@@ -272,7 +272,7 @@ struct mp_nl_attr event_sub_closed(char* res_buff, bool debug)
 
 
 /**
- * @brief	Extract netlink attributes from MPTCP_EVENT_SUB_PRIORITY
+ * @brief	Extract netlink attributes from response message(EVENT_SUB_PRIORITY)
  * 
  * @func	event_sub_priority
  * @param	res_buff		: Received event message buff

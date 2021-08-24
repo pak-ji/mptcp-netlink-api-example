@@ -14,8 +14,7 @@
 #include "../hdr/libnl_api.h"
 
 /**
- * @brief	Create a message to request MPTCP_CMD_ANNOUNCE \
- * 			to the MPTCP Netlink API
+ * @brief	Create a request message(CMD_ANNOUNCE) to send to MPTCP Netlink API.
  * 
  * @func	create_cmd_announce_req
  * @param	attr 			: Attributes for creating request messages
@@ -46,8 +45,7 @@ struct nl_msg* create_cmd_announce_req(struct mp_nl_attr attr, int family_id)
 
 
 /**
- * @brief	Create a message to request MPTCP_CMD_SUB_CREATE \
- * 			to the MPTCP Netlink API
+ * @brief	Create a request message(CMD_SUB_CREATE) to send to MPTCP Netlink API.
  * 
  * @func	create_cmd_sub_create_req
  * @param	attr 			: Attributes for creating request messages
@@ -84,8 +82,7 @@ struct nl_msg* create_cmd_sub_create_req(struct mp_nl_attr attr, int family_id)
 
 
 /**
- * @brief	Create a message to request MPTECP_CMD_SUB_PRIORITY \
- * 			to the MPTCP Netlink API
+ * @brief	Create a request message(CMD_SUB_PRIORITY) to send to MPTCP Netlink API.
  * 
  * @func	create_cmd_sub_priority
  * @param	attr 			: Attributes for creating request messages
