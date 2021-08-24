@@ -195,7 +195,7 @@ int main(int argc, char** argv)
 	printf("INFO) Socket creation completed.\n");
 
 	/* 7. 연결 요청 */
-	printf("INFO) Connecting to server(%s:%d)...\n", tmp_server_addr, tmp_server_port);
+	printf("INFO) Connecting to server...(%s:%d)\n", tmp_server_addr, tmp_server_port);
 	if(bind(mp_main_sock, (struct sockaddr*)&client_addr, sizeof(client_addr)) < 0){
 		perror("ERROR) bind() ");
 		return -1;
