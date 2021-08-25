@@ -109,19 +109,20 @@ int main(int argc, char** argv)
 		return -1;
 	}
 
-	nsize = -1;
-	while(nsize!=0){
+	while(1){
 		nsize = recv(mp_main_client_sock, recv_buff, 1024, 0);
+		
+		if(nsize <= 0) break;
 		fwrite(recv_buff, sizeof(char), nsize, file);
 	}
 	printf("INFO) Received file\n");
 
 	/* End */
-	fclose(file);
 	close(mp_main_client_sock);
 	close(mp_main_server_sock);
+	fclose(file);
 
-	pthread_join(thread1, NULL);
+	//pthread_join(thread1, NULL);
 
 	return 0;
 }
