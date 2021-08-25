@@ -26,8 +26,10 @@ struct mp_nl_res extract_event(char* res_buff)
 	struct mp_nl_res res;
 
 	res.nlh = (struct nlmsghdr*)res_buff;
-	res.genlh = (struct genlmsghdr*)genlmsg_hdr(res.nlh);
-	res.nla = (struct nlattr*)genlmsg_data(res.genlh);
+	//res.genlh = (struct genlmsghdr*)genlmsg_hdr(res.nlh);
+	res.genlh = (struct genlmsghdr*)((char*)res.nlh+16);
+	//res.nla = (struct nlattr*)genlmsg_data(res.genlh);
+	res.nla = (struct nlattr*)((char*)res.genlh+4);
 	res.msg_len = res.nlh->nlmsg_len;
 	res.payload_len = res.msg_len - (16 + 4); // 16 = NLMSG_HDRLEN / 4 = GENLMSG_HDRLEN
 	
