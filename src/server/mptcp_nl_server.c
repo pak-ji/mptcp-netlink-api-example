@@ -1,3 +1,10 @@
+/**
+ * @date		2021-08-25(WED)
+ * @author		Ji-Hun(INSLAB)
+ */
+
+
+
 #include <string.h>
 #include <unistd.h>
 #include <errno.h>
