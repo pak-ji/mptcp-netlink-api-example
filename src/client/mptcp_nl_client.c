@@ -1,6 +1,5 @@
 /**
- * 
- * @date		xxxx-xx-xx(xxx)
+ * @date		2021-08-25(WED)
  * @author		Ji-Hun(INSLAB)
  */
 
