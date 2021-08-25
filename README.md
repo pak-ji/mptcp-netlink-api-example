@@ -76,11 +76,11 @@ $ make
 ## How to run?
 ##### in server
 <pre>
-$ ./src/mptcp_nl_server
+$ ./src/mptcp_nl_server [ip_address] [port_number]
 </pre>
 ##### in client
 <pre>
-$ ./src/mptcp_nl_client
+$ ./src/mptcp_nl_client [file_path]
 </pre>
 
 <br>
