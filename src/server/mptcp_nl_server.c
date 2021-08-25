@@ -198,6 +198,8 @@ void event_recv_subflow_th(void* arg)
 
 			case MPTCP_EVENT_CLOSED:
 				event_closed(mp_nl_res_msg, 1);
+				nl_socket_free(nl_recv_sock);
+				nl_socket_free(nl_send_sock);
 				pthread_exit(NULL);
 				break;
 
