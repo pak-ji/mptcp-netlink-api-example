@@ -49,6 +49,7 @@ int main(int argc, char** argv)
 	char tmp_server_addr[15] = { '\0', };
 	int tmp_server_port;
 	char* manager = "netlink";
+	char* scheduler = "default";
 	int enable = 1;
 	char send_buff[1024] = { '\0', };
 
@@ -61,7 +62,8 @@ int main(int argc, char** argv)
 	int nic_num;
 	int sel_nic1, sel_nic2;
 	int main_nic, sub_nic;
-	char* main_nic_addr, sub_nic_addr;
+	char* main_nic_addr;
+	char* sub_nic_addr;
 
 	pthread_t thread1, thread2;
 
@@ -138,16 +140,21 @@ int main(int argc, char** argv)
 	else
 		sub_nic = sel_nic1;
 
+	strtok(nic[main_nic], ":");
+	main_nic_addr = strtok(NULL, " ");
+
+	strtok(nic[sub_nic], ":");
+	sub_nic_addr = strtok(NULL, " ");
+
 	printf("INFO) You selected number %d NIC\n", main_nic);
-	printf("INFO) Main NIC number : %d\n", main_nic);
-	printf("INFO) Sub NIC number : %d\n", sub_nic);
+	printf("INFO) Main NIC(%s) addr : %s\n", strtok(nic[main_nic], ":"), main_nic_addr);
+	printf("INFO) Sub NIC(%s) addr : %s\n", strtok(nic[sub_nic], ":"), sub_nic_addr);
 	printf("\n");
 	
 	/* 3. 초기 연결에 사용할 NIC 정보를Client 소켓에 할당 */
 	memset(&client_addr, 0, sizeof(client_addr));
 	client_addr.sin_family = AF_INET;
-	strtok(nic[main_nic], ":");
-	client_addr.sin_addr.s_addr = inet_addr(strtok(NULL , " "));
+	client_addr.sin_addr.s_addr = inet_addr(main_nic_addr);
 
 	/* 4. 연결할 서버의 주소와 포트 입력받기 */
 	printf("INFO) Enter the IP address of the server.\n");
@@ -171,8 +178,10 @@ int main(int argc, char** argv)
 	printf("INFO) Creating thread...\n");
 	pthread_mutex_init(&mutex, NULL);
 	pthread_cond_init(&cond, NULL);
-	pthread_create(&thread1, NULL, (void*)event_recv_subflow_th, NULL);
-	//pthread_create(&thread2, NULL, (void*)toggle_subflow_th, NULL);
+	pthread_create(&thread1, NULL, (void*)event_recv_subflow_th, (void*)sub_nic_addr);
+	pthread_create(&thread2, NULL, (void*)toggle_subflow_th, NULL);
+	printf("INFO) Wakeup the event_recv_subflow_th().\n");
+	printf("INFO) Sleep the toggle_subflow_th().\n");
 
 	/* 6. 소켓 생성 */
 	printf("INFO) Creating socket...\n");
@@ -188,6 +197,11 @@ int main(int argc, char** argv)
 	}
 
 	if(setsockopt(mp_main_sock, SOL_TCP, MPTCP_PATH_MANAGER, manager, strlen(manager)) < 0){
+		perror("ERROR) setsockopt() ");
+		return -1;
+	}
+
+	if(setsockopt(mp_main_sock, SOL_TCP, MPTCP_SCHEDULER, scheduler, strlen(scheduler)) < 0){
 		perror("ERROR) setsockopt() ");
 		return -1;
 	}
@@ -224,7 +238,7 @@ int main(int argc, char** argv)
 	close(mp_main_sock);
 
 	pthread_join(thread1, NULL);
-	//pthread_join(thread2, NULL);
+	pthread_join(thread2, NULL);
 
 	return 0;
 }
@@ -233,77 +247,205 @@ int main(int argc, char** argv)
 
 void event_recv_subflow_th(void* arg)
 {
-	struct nl_sock*	nl_comm_sock;
+	char* sub_nic_addr = (char*)arg;
+
+	struct nl_sock*	nl_recv_sock;
+	struct nl_sock*	nl_send_sock;
 	char recv_buff[1024];
 	int family_id;
 	int group_id;
 	int ret;
 
-	nl_comm_sock = nl_socket_alloc();
-	if(!nl_comm_sock){
-		fprintf(stderr, "ERROR) Netlink socket allocation error\n");
+	nl_recv_sock = nl_socket_alloc();
+	nl_send_sock = nl_socket_alloc();
+	if(!nl_recv_sock || !nl_send_sock){
+		fprintf(stderr, "ERROR) Netlink socket allocation error.\n");
 		return;
 	}
 
-	if(genl_connect(nl_comm_sock)){
-		fprintf(stderr, "ERROR) Generic netlink connect error\n");
+	if(genl_connect(nl_recv_sock) || genl_connect(nl_send_sock)){
+		fprintf(stderr, "ERROR) Generic netlink connect error.\n");
 		return;
 	}
 
-	family_id = genl_ctrl_resolve(nl_comm_sock, MPTCP_GENL_NAME);
+	family_id = genl_ctrl_resolve(nl_recv_sock, MPTCP_GENL_NAME);
 	if(family_id < 0){
-		fprintf(stderr, "ERROR) Family id lookup error\n");
+		fprintf(stderr, "ERROR) Family id lookup error.\n");
 		return;
 	}
 
-	group_id = genl_ctrl_resolve_grp(nl_comm_sock, MPTCP_GENL_NAME, MPTCP_GENL_EV_GRP_NAME);
+	group_id = genl_ctrl_resolve_grp(nl_recv_sock, MPTCP_GENL_NAME, MPTCP_GENL_EV_GRP_NAME);
 	if(group_id < 0){
-		fprintf(stderr, "ERROR) Group id lookup error\n");
+		fprintf(stderr, "ERROR) Group id lookup error.\n");
 		return;
 	}
 
-	if(nl_socket_add_membership(nl_comm_sock, group_id)){
-		fprintf(stderr, "ERROR) Netlink socket group join error\n");
+	if(nl_socket_add_membership(nl_recv_sock, group_id)){
+		fprintf(stderr, "ERROR) Netlink socket group join error.\n");
 		return;
 	}
 
 	while(1){
 		memset(recv_buff, 0, sizeof(recv_buff));
-		ret = recv(nl_socket_get_fd(nl_comm_sock), recv_buff, sizeof(recv_buff), 0);
+		ret = recv(nl_socket_get_fd(nl_recv_sock), recv_buff, sizeof(recv_buff), 0);
 		if(ret < 0){
-			fprintf(stderr, "ERROR) Event receive error\n");
+			fprintf(stderr, "ERROR) Event receive error.\n");
 			return;
 		}
 
 		mp_nl_res_msg = extract_event(recv_buff);
 
-
-		/* 사감 지원 신청하고
-		 * FIXME Thread에 이벤트 수신함수는 모두 작성완료
-		 *       이제 특정 이벤트에 특정 커맨드 날리는거 진행*/
-
 		switch(mp_nl_res_msg.genlh->cmd){
 			case MPTCP_EVENT_CREATED:
 				main_attr = event_created(mp_nl_res_msg, 1);
+				
+				/* MPTCP_CMD_ANNOUNCE */
+				// main
+				main_attr.loc_id = 0x1;
+				mp_nl_req_msg.req = create_cmd_announce_req(main_attr, family_id);
+				nl_send_auto(nl_send_sock, mp_nl_req_msg.req);
+
+				// sub
+				memcpy(&sub_attr, &main_attr, sizeof(struct mp_nl_attr));
+				sub_attr.loc_id = 0x2;
+				sub_attr.saddr4 = inet_addr(sub_nic_addr);
+				mp_nl_req_msg.req = create_cmd_announce_req(sub_attr, family_id);
+				nl_send_auto(nl_send_sock, mp_nl_req_msg.req);
 				break;
+
 			case MPTCP_EVENT_ESTABLISHED:
 				event_established(mp_nl_res_msg, 1);
+
+				/* MPTCP_CMD_SUB_CREATE */
+				mp_nl_req_msg.req = create_cmd_sub_create_req(sub_attr, family_id);
+				nl_send_auto(nl_send_sock, mp_nl_req_msg.req);
 				break;
+
 			case MPTCP_EVENT_CLOSED:
 				event_closed(mp_nl_res_msg, 1);
+				nl_socket_free(nl_recv_sock);
 				pthread_exit(NULL);
 				break;
+
 			case MPTCP_EVENT_ANNOUNCED:
-				event_announced(mp_nl_res_msg, 1);
+				tmp_attr = event_announced(mp_nl_res_msg, 1);
+				main_attr.rem_id = tmp_attr.rem_id;
+				sub_attr.rem_id = tmp_attr.rem_id;
 				break;
+
 			case MPTCP_EVENT_SUB_ESTABLISHED:
 				sub_attr = event_sub_established(mp_nl_res_msg, 1);
+
+				/* MPTCP_CMD_SUB_PRIORITY */
+				sub_attr.backup = 1;
+				mp_nl_req_msg.req = create_cmd_sub_priority_req(sub_attr, family_id);
+				nl_send_auto(nl_send_sock, mp_nl_req_msg.req);
+
+				/* wake up toggle_subflow_th() */
+				pthread_cond_signal(&cond);
+				nl_socket_free(nl_send_sock);
 				break;
+
 			case MPTCP_EVENT_SUB_PRIORITY:
 				event_sub_priority(mp_nl_res_msg, 1);
 				break;
+
 			default:
 				break;
 		}
+		printf("\n");
 	}
+}
+
+
+
+void toggle_subflow_th(void* arg)
+{
+	pthread_cond_wait(&cond, &mutex);
+
+	struct nl_sock*	nl_send_sock;
+	int family_id;
+	int toggle;
+	int ret;
+	unsigned char* ptr;
+
+	nl_send_sock = nl_socket_alloc();
+	if(!nl_send_sock){
+		fprintf(stderr, "ERROR) Netlink socket allocation error.\n");
+		return;
+	}
+
+	if(genl_connect(nl_send_sock)){
+		fprintf(stderr," ERROR) Generic netlink connect error.\n");
+		return;
+	}
+
+	family_id = genl_ctrl_resolve(nl_send_sock, MPTCP_GENL_NAME);
+	if(family_id < 0){
+		fprintf(stderr, "ERROR) Family id lookup error.\n");
+		return;
+	}
+
+	/* 
+	 * subflow toggle control (Primary <--> Backup)
+	 */
+	printf("INFO) The init operation is completed.\n");
+	printf("INFO) This program will now proceed the subflow toggle opration.\n");
+	while(1){
+		memset(&toggle, 0, sizeof(toggle));
+
+		printf("\n");
+		printf("----- Current subflow priority status ----- \n");
+		ptr = (unsigned char*)&main_attr.saddr4;
+		printf("%u.%u.%u.%u:%d ->", 
+					*(ptr+0), *(ptr+1), *(ptr+2), *(ptr+3), main_attr.sport);
+		ptr = (unsigned char*)&main_attr.daddr4;
+		printf("%u.%u.%u.%u:%d = %s\n",
+					*(ptr+0), *(ptr+1), *(ptr+2), *(ptr+3), main_attr.dport,
+					main_attr.backup?"Backup":"Primary");
+
+
+		ptr = (unsigned char*)&sub_attr.saddr4;
+		printf("%u.%u.%u.%u:%d ->",
+					*(ptr+0), *(ptr+1), *(ptr+2), *(ptr+3), sub_attr.sport);
+		ptr = (unsigned char*)&sub_attr.daddr4;
+		printf("%u.%u.%u.%u:%d = %s\n",
+					*(ptr+0), *(ptr+1), *(ptr+2), *(ptr+3), sub_attr.dport,
+					sub_attr.backup?"Backup":"Primary");
+		printf("------------------------------------------- \n");
+
+		printf("INFO) You want to toggle the priority of the two subflows?\n");
+		printf("INFO) Toggle(1) / Toggle Exit(0)\n");
+		printf("EX) INPUT >> 1\n");
+		printf("INPUT  >> ");
+		scanf("%d", &toggle);
+		printf("INFO) You can view NIC statistics using \"ifstat\" shell command\n");
+
+		if(toggle == 1){
+			if(main_attr.backup){
+				main_attr.backup = 0;
+				sub_attr.backup = 1;
+			}
+			else{
+				main_attr.backup = 1;
+				sub_attr.backup = 0;
+			}
+
+			mp_nl_req_msg.req = create_cmd_sub_priority_req(main_attr, family_id);
+			nl_send_auto(nl_send_sock, mp_nl_req_msg.req);
+
+			mp_nl_req_msg.req = create_cmd_sub_priority_req(sub_attr, family_id);
+			nl_send_auto(nl_send_sock, mp_nl_req_msg.req);
+		}
+		else if(toggle == 0){
+			break;
+		}
+		else{
+			printf("INFO) You entered an invalid number(%d).\n", toggle);
+			continue;
+		}
+	}
+
+	nl_socket_free(nl_send_sock);
+	pthread_exit(NULL);
 }
