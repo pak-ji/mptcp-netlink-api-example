@@ -38,8 +38,8 @@ struct mp_nl_res	mp_nl_res_msg;
 pthread_mutex_t mutex;
 pthread_cond_t cond;
 
-void* event_recv_subflow_th(void* arg);
-void* toggle_subflow_th(void* arg);
+void event_recv_subflow_th(void* arg);
+void toggle_subflow_th(void* arg);
 
 int main(int argc, char** argv)
 {
@@ -168,12 +168,11 @@ int main(int argc, char** argv)
 	printf("\n");
 
 	/* 5. 쓰레드 생성 */
-	/*
+	printf("INFO) Creating thread...\n");
 	pthread_mutex_init(&mutex, NULL);
 	pthread_cond_init(&cond, NULL);
-	pthread_create(&thread1, NULL, event_recv_subflow_th, NULL);
-	pthread_create(&thread2, NULL, toggle_subflow_th, NULL);
-	*/
+	pthread_create(&thread1, NULL, (void*)event_recv_subflow_th, NULL);
+	//pthread_create(&thread2, NULL, (void*)toggle_subflow_th, NULL);
 
 	/* 6. 소켓 생성 */
 	printf("INFO) Creating socket...\n");
@@ -224,10 +223,87 @@ int main(int argc, char** argv)
 	fclose(file);
 	close(mp_main_sock);
 
-	/*
 	pthread_join(thread1, NULL);
-	pthread_join(thread2, NULL);
-	*/
+	//pthread_join(thread2, NULL);
 
 	return 0;
+}
+
+
+
+void event_recv_subflow_th(void* arg)
+{
+	struct nl_sock*	nl_comm_sock;
+	char recv_buff[1024];
+	int family_id;
+	int group_id;
+	int ret;
+
+	nl_comm_sock = nl_socket_alloc();
+	if(!nl_comm_sock){
+		fprintf(stderr, "ERROR) Netlink socket allocation error\n");
+		return;
+	}
+
+	if(genl_connect(nl_comm_sock)){
+		fprintf(stderr, "ERROR) Generic netlink connect error\n");
+		return;
+	}
+
+	family_id = genl_ctrl_resolve(nl_comm_sock, MPTCP_GENL_NAME);
+	if(family_id < 0){
+		fprintf(stderr, "ERROR) Family id lookup error\n");
+		return;
+	}
+
+	group_id = genl_ctrl_resolve_grp(nl_comm_sock, MPTCP_GENL_NAME, MPTCP_GENL_EV_GRP_NAME);
+	if(group_id < 0){
+		fprintf(stderr, "ERROR) Group id lookup error\n");
+		return;
+	}
+
+	if(nl_socket_add_membership(nl_comm_sock, group_id)){
+		fprintf(stderr, "ERROR) Netlink socket group join error\n");
+		return;
+	}
+
+	while(1){
+		memset(recv_buff, 0, sizeof(recv_buff));
+		ret = recv(nl_socket_get_fd(nl_comm_sock), recv_buff, sizeof(recv_buff), 0);
+		if(ret < 0){
+			fprintf(stderr, "ERROR) Event receive error\n");
+			return;
+		}
+
+		mp_nl_res_msg = extract_event(recv_buff);
+
+
+		/* 사감 지원 신청하고
+		 * FIXME Thread에 이벤트 수신함수는 모두 작성완료
+		 *       이제 특정 이벤트에 특정 커맨드 날리는거 진행*/
+
+		switch(mp_nl_res_msg.genlh->cmd){
+			case MPTCP_EVENT_CREATED:
+				main_attr = event_created(mp_nl_res_msg, 1);
+				break;
+			case MPTCP_EVENT_ESTABLISHED:
+				event_established(mp_nl_res_msg, 1);
+				break;
+			case MPTCP_EVENT_CLOSED:
+				event_closed(mp_nl_res_msg, 1);
+				pthread_exit(NULL);
+				break;
+			case MPTCP_EVENT_ANNOUNCED:
+				event_announced(mp_nl_res_msg, 1);
+				break;
+			case MPTCP_EVENT_SUB_ESTABLISHED:
+				sub_attr = event_sub_established(mp_nl_res_msg, 1);
+				break;
+			case MPTCP_EVENT_SUB_PRIORITY:
+				event_sub_priority(mp_nl_res_msg, 1);
+				break;
+			default:
+				break;
+		}
+	}
 }
