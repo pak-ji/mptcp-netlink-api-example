@@ -82,5 +82,6 @@ $ sudo ./mptcp_nl_client [file_path]
 
 ## Video
 https://user-images.githubusercontent.com/48320014/130901292-cc24f3ab-1e45-41c4-a870-5ad56d4cf949.mp4
+* I recommend you watch it on full screen.
 
 
