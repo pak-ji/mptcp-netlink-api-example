@@ -29,7 +29,8 @@ OS
 	- Mptcp 0.95 (mptcp of multipath-tcp.org)
 Package
 	- libnl3
-	- ifstat (for testing)
+	- ifstat (for NIC statistics)
+	- speedometer (for NIC statistics)
 </pre>  
 
 <br>
