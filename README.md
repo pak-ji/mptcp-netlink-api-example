@@ -1,4 +1,4 @@
-## mptcp-netlink-api-example
+## mptcp-netlink-pm-api-example
 * This is an example of the MPTCP Netlink API tested.
 * Example to toggle the priorities of two Subflows.
 * A demo video at the bottom.
