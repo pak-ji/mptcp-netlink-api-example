@@ -51,9 +51,14 @@ libnl3 (Must)
 $ sudo apt-get install libnl-3-dev libnl-genl-3-dev
 </pre>
 <pre>
-ifstat
+ifstat (NIC statistics)
 
 $ sudo apt-get install ifstat
+</pre>
+<pre>
+speedometer (NIC statistics)
+
+$ sudo apt-get install speedometer
 </pre>
 
 <br>
