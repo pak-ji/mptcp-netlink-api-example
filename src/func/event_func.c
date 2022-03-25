@@ -1,6 +1,6 @@
 /**
  * @brief	Function to extract contents of \
- * 			event messages received from \
+ * 			received event messages from \
  *			MPTCP Generic Netlink API
  * 
  * @date	2021-08-22(SUN)
